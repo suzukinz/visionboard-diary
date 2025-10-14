@@ -7,7 +7,7 @@ function keyForDate(d: Date) {
   return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`;
 }
 
-function defaultJournalHTML(date: Date) {
+function defaultJournalHTML() {
   return `<p></p>`;
 }
 
@@ -39,11 +39,11 @@ export function Journal({ theme = 'classic' }: JournalProps) {
   );
 
   useEffect(() => {
-    setStore(s => (dkey in s ? s : { ...s, [dkey]: defaultJournalHTML(date) }));
+    setStore(s => (dkey in s ? s : { ...s, [dkey]: defaultJournalHTML() }));
   }, [dkey]);
 
   useEffect(() => {
-    const html = store[dkey] ?? defaultJournalHTML(date);
+    const html = store[dkey] ?? defaultJournalHTML();
     if (editorRef.current && editorRef.current.innerHTML !== html) {
       editorRef.current.innerHTML = html;
     }

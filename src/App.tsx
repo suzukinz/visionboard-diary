@@ -6,9 +6,20 @@ import { Icon } from "./components/Icons";
 import { Journal } from "./components/Journal";
 import { cx, isDark, isPop, PALETTE } from "./utils/helpers";
 
+interface StickyItem {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+  text: string;
+  variant: string;
+}
+
 function App() {
   const [theme, setTheme] = useState<'classic' | 'pop' | 'dark'>('pop');
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<StickyItem[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAddMenu, setShowAddMenu] = useState(false);
@@ -147,12 +158,6 @@ function App() {
     : isDark(theme)
     ? "bg-[radial-gradient(circle_at_20%_10%,#1e293b,transparent_50%),radial-gradient(circle_at_80%_20%,#312e81,transparent_50%),radial-gradient(circle_at_40%_90%,#0c4a6e,transparent_60%),#0f172a]"
     : "bg-[radial-gradient(ellipse_at_top_left,theme(colors.slate.100),white)]";
-
-  const boardBg = isPop(theme)
-    ? "bg-[radial-gradient(circle_at_20%_20%,#fecdd3,transparent_45%),radial-gradient(circle_at_80%_0%,#bae6fd,transparent_40%),radial-gradient(circle_at_0%_80%,#fde047,transparent_45%),radial-gradient(circle_at_60%_60%,#d8b4fe,transparent_40%),#fef9f3]"
-    : isDark(theme)
-    ? "bg-[radial-gradient(ellipse_at_top_right,#1e293b,#0f172a)]"
-    : "bg-[radial-gradient(ellipse_at_top_right,theme(colors.slate.50),white)]";
 
   return (
     <div className={cx("min-h-screen w-full relative flex flex-col", appBG)}>
