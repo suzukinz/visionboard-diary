@@ -198,7 +198,7 @@ export function Journal({ theme = 'classic' }: JournalProps) {
       <aside
         style={{ flex: '2 0 0' }}
         className={cx(
-          "border-l p-3 hidden xl:block",
+          "border-l p-3 hidden xl:block overflow-y-auto flex flex-col",
           isPop(theme)
             ? "bg-sky-50/50 border-sky-100"
             : isDark(theme)
@@ -206,10 +206,10 @@ export function Journal({ theme = 'classic' }: JournalProps) {
             : "bg-slate-50/50 border-slate-200"
         )}
       >
-        <div className="font-semibold">今月</div>
+        <div className="font-semibold mb-2">今月</div>
         {/* 曜日ヘッダー */}
         <div className={cx(
-          "mt-2 grid grid-cols-7 gap-1 text-[10px] font-medium text-center",
+          "grid grid-cols-7 gap-1 text-[10px] font-medium text-center",
           isDark(theme) ? "text-slate-400" : "text-slate-600"
         )}>
           <div className={isDark(theme) ? "text-pink-400" : "text-pink-600"}>日</div>
@@ -221,7 +221,7 @@ export function Journal({ theme = 'classic' }: JournalProps) {
           <div className={isDark(theme) ? "text-sky-400" : "text-sky-600"}>土</div>
         </div>
         {/* カレンダー */}
-        <div className="mt-1 grid grid-cols-7 gap-1 text-xs">
+        <div className="mt-1 grid grid-cols-7 gap-0.5 text-[11px]">
           {(() => {
             const year = date.getFullYear();
             const month = date.getMonth();
@@ -251,14 +251,14 @@ export function Journal({ theme = 'classic' }: JournalProps) {
                   key={day}
                   onClick={() => setDate(dd)}
                   className={cx(
-                    "aspect-square rounded border text-center flex items-center justify-center",
+                    "aspect-square rounded text-center flex items-center justify-center text-xs p-1",
                     isSel
                       ? isDark(theme)
-                        ? "bg-slate-800 border-sky-500 ring-1 ring-sky-600"
-                        : "bg-white border-sky-300 ring-1 ring-sky-300"
+                        ? "bg-slate-700 border border-sky-500 font-semibold"
+                        : "bg-sky-100 border border-sky-400 font-semibold"
                       : isDark(theme)
-                      ? "bg-slate-900 border-slate-700 hover:bg-slate-800"
-                      : "bg-white/80 hover:bg-white",
+                      ? "hover:bg-slate-800"
+                      : "hover:bg-slate-100",
                     // 土曜日の色分け
                     isSaturday && !isSel && (isDark(theme) ? "text-sky-400" : "text-sky-600"),
                     // 日曜日の色分け
