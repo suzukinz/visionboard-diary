@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { cx, isDark, isPop } from "../utils/helpers";
 import { Icon } from "./Icons";
-import { Store } from "@tauri-apps/plugin-store";
+import { load } from "@tauri-apps/plugin-store";
 
 function keyForDate(d: Date) {
   const z = (n: number) => String(n).padStart(2, '0');
@@ -20,7 +20,6 @@ export function Journal({ theme = 'classic' }: JournalProps) {
   const [date, setDate] = useState(() => new Date());
   const [store, setStore] = useState<{ [key: string]: string }>(() => ({}));
   const editorRef = useRef<HTMLDivElement>(null);
-  const tauriStore = new Store("journal.json");
 
   const shift = (d: number) => {
     const n = new Date(date);
@@ -44,6 +43,7 @@ export function Journal({ theme = 'classic' }: JournalProps) {
   useEffect(() => {
     const loadJournals = async () => {
       try {
+        const tauriStore = await load("journal.json");
         const savedJournals = await tauriStore.get<{ [key: string]: string }>("journals");
         if (savedJournals) {
           setStore(savedJournals);
@@ -71,6 +71,7 @@ export function Journal({ theme = 'classic' }: JournalProps) {
   useEffect(() => {
     const saveJournals = async () => {
       try {
+        const tauriStore = await load("journal.json");
         await tauriStore.set("journals", store);
         await tauriStore.save();
       } catch (error) {

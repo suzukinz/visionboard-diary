@@ -5,7 +5,7 @@ import { Draggable } from "./components/Draggable";
 import { Icon } from "./components/Icons";
 import { Journal } from "./components/Journal";
 import { cx, isDark, isPop, PALETTE } from "./utils/helpers";
-import { Store } from "@tauri-apps/plugin-store";
+import { load } from "@tauri-apps/plugin-store";
 
 interface StickyItem {
   id: string;
@@ -17,8 +17,6 @@ interface StickyItem {
   text: string;
   variant: string;
 }
-
-const store = new Store("visionboard.json");
 
 function App() {
   const [theme, setTheme] = useState<'classic' | 'pop' | 'dark'>('pop');
@@ -39,6 +37,7 @@ function App() {
   useEffect(() => {
     const loadData = async () => {
       try {
+        const store = await load("visionboard.json");
         const savedItems = await store.get<StickyItem[]>("items");
         const savedTheme = await store.get<'classic' | 'pop' | 'dark'>("theme");
 
@@ -56,6 +55,7 @@ function App() {
   useEffect(() => {
     const saveItems = async () => {
       try {
+        const store = await load("visionboard.json");
         await store.set("items", items);
         await store.save();
       } catch (error) {
@@ -72,6 +72,7 @@ function App() {
   useEffect(() => {
     const saveTheme = async () => {
       try {
+        const store = await load("visionboard.json");
         await store.set("theme", theme);
         await store.save();
       } catch (error) {
