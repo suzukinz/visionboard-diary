@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { Sticky } from "./components/Sticky";
 import { Draggable } from "./components/Draggable";
 import { Icon } from "./components/Icons";
 import { Journal } from "./components/Journal";
 import { cx, isDark, isPop, PALETTE } from "./utils/helpers";
+import { Store } from "@tauri-apps/plugin-store";
 
 interface StickyItem {
   id: string;
@@ -16,6 +17,8 @@ interface StickyItem {
   text: string;
   variant: string;
 }
+
+const store = new Store("visionboard.json");
 
 function App() {
   const [theme, setTheme] = useState<'classic' | 'pop' | 'dark'>('pop');
@@ -31,6 +34,53 @@ function App() {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+
+  // Load data from store on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const savedItems = await store.get<StickyItem[]>("items");
+        const savedTheme = await store.get<'classic' | 'pop' | 'dark'>("theme");
+
+        if (savedItems) setItems(savedItems);
+        if (savedTheme) setTheme(savedTheme);
+      } catch (error) {
+        console.error("Failed to load data:", error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Save items to store whenever they change
+  useEffect(() => {
+    const saveItems = async () => {
+      try {
+        await store.set("items", items);
+        await store.save();
+      } catch (error) {
+        console.error("Failed to save items:", error);
+      }
+    };
+
+    if (items.length > 0 || items.length === 0) {
+      saveItems();
+    }
+  }, [items]);
+
+  // Save theme to store whenever it changes
+  useEffect(() => {
+    const saveTheme = async () => {
+      try {
+        await store.set("theme", theme);
+        await store.save();
+      } catch (error) {
+        console.error("Failed to save theme:", error);
+      }
+    };
+
+    saveTheme();
+  }, [theme]);
 
   const updatePos = (id: string, pos: { x: number; y: number }) => {
     setItems(items.map(it => (it.id === id ? { ...it, ...pos } : it)));
